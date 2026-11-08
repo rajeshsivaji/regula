@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  docreader:
+    container_name: docreader
+    image: regulaforensics/docreader:7
+    volumes:
+      - ./regula.license:/app/extBin/unix/regula.license
+      - ./config.yml:/app/config.yaml
+    networks:
+      - docreader-network
+    depends_on:
+      - db-postgres
+    ports:
+      - "8080:8080"
+
+  db-postgres:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - postgre-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "regula_docreader_db"
+      POSTGRES_USER: "regula"
+      POSTGRES_PASSWORD: "Regulapasswd#1"
+    networks:
+      - docreader-network
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgre-data:
+
+networks:
+  docreader-network:
+    driver: bridge

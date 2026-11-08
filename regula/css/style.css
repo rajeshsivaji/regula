@@ -1,0 +1,135 @@
+/* Base */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+}
+
+/* Hide Regula built-in close buttons */
+document-reader::part(container-close-button),
+document-reader::part(controls-process-close-button) {
+    display: none !important;
+}
+
+/* Remove Regula border/background/shadow */
+document-reader {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+document-reader::part(container-header),
+document-reader::part(menu-title),
+document-reader::part(menu-subtitle) {
+    display: none !important;
+}
+document-reader::part(menu-container) {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+document-reader::part(container) {
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Col 1 reader — hide camera and mobile buttons, show only gallery */
+#regula-container document-reader::part(menu-from-camera-button),
+#regula-container document-reader::part(menu-from-mobile-button) {
+    display: none !important;
+}
+#regula-container document-reader::part(menu-from-gallery-button) {
+    display: none !important;
+}
+
+/* Col 2 reader — hide camera and gallery buttons, show only mobile button */
+/* Also hide switch-to-mobile screen title/subtitle since we have our own label */
+#mobile-container document-reader::part(menu-from-camera-button),
+#mobile-container document-reader::part(menu-from-gallery-button) {
+    display: none !important;
+}
+#mobile-container document-reader::part(remote-scanner-title),
+#mobile-container document-reader::part(remote-scanner-subtitle) {
+    display: none !important;
+}
+
+/* Col 3 reader (hidden) — hide all menu buttons */
+#qr-container document-reader::part(menu-from-camera-button),
+#qr-container document-reader::part(menu-from-gallery-button),
+#qr-container document-reader::part(menu-from-mobile-button) {
+    display: none !important;
+}
+#qr-container document-reader::part(remote-scanner-title),
+#qr-container document-reader::part(remote-scanner-subtitle) {
+    display: none !important;
+}
+
+/* Modal layout */
+.upload-panel {
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    gap: 16px;
+}
+.upload-col {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 16px;
+}
+.upload-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1b191e;
+    margin-bottom: 10px;
+    display: block;
+    text-align: center;
+}
+
+/* Drag drop zone */
+.drag-drop-zone {
+    border: 2px dashed #d9d9d9;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+}
+.drag-drop-sub {
+    gap: 4px;
+}
+.dd-info {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+/* Footer file preview */
+.file-preview-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f5f6fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 8px 0 4px;
+}
+.file-preview-footer img {
+    height: 48px;
+    width: auto;
+    border-radius: 4px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.footer-preview-name {
+    font-size: 12px;
+    color: #595959;
+    word-break: break-all;
+}
+

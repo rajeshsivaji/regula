@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Regula Document Analyser</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Regula Web SDK -->
+    <script src="https://unpkg.com/@regulaforensics/vp-frontend-document-components@latest/dist/main.iife.js"></script>
+    <script>
+        window.BACKEND_URL = 'https://dingo-limit-hedging.ngrok-free.dev';
+        const BACKEND_URL = window.BACKEND_URL;
+        window.LICENSE_KEY = 'AAEAADeBk3Ctwo4VpTiqpO74jBK0c1jqtteF3chLgpkSKPGsCBXbZxOd+y3kdSCS1FS6RgkCHu3ycU7o6AvweG01Dnz49Vz840Ee3QIZeG22PDEPD8TvSCCyRAEDRZiadB6QO8Kebkfb3rLIKAG5BkXsFCr98HIw243ifbmi3VvT5WBpuqZ7cy+eCPZcORbLAskOR5+RqdArXxiaYn0Zd1l69DZF1ROTRA/szb4HWjroxN/2VwcpmdBGcTHX44S8wbLNbsgvhDGCWIRgr/TM5h3nlfocgwFrqdNMYGamj5x0AG5ywIomw0RoXceQvvU3UsWwQkwFdFv56gwopiTWWN5r7OfkAAAAAAAAEBXpTxuCgavCDo1gWXhbe+qQ4iwEMndabCJ5ZGqO/BocnrMHhneMn2XpEM0OgweFeRQx7WNz2U/rrJD3mbD8r4PbmdjWLFY92o/b5sXjimdUIG8b4WHJc7SivjdunU3HCR9wMe1onPEl8ipTmyitqpPUXLG3KegfpxABPk86qleqnHGxbHgSSufbqWxEyBCj5Ep0aRmHDwNpuXNV6sYvJHROmYT3k6yyWp9Or6013j03coMArrr9jcbABqoJxJGBasO4bfGW5f4KiQzFZuLVrL7LdvHAmubecG00DC1HQzlB';
+
+        window.RegulaDocumentSDK = new Regula.DocumentReaderService({
+            serviceURL: BACKEND_URL
+        });
+
+        window.RegulaDocumentSDK.recognizerProcessParam = {
+            processParam: { scenario: 'MrzAndLocate' },
+            delegateProcessing: {
+                serviceURL: BACKEND_URL,
+                delegateURL: BACKEND_URL + '?tag={tag}'
+            }
+        };
+        window.RegulaDocumentSDK.imageProcessParam = {
+            processParam: { scenario: 'MrzAndLocate' },
+            delegateProcessing: {
+                serviceURL: BACKEND_URL,
+                delegateURL: BACKEND_URL + '?tag={tag}'
+            }
+        };
+        window.RegulaDocumentSDK.startParams = {
+            sessionApi: {
+                serviceURL: BACKEND_URL
+            }
+        };
+
+        Regula.defineComponents().then(() => {
+            ['documentReader', 'mobileReader', 'qrReader'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.setAttribute('license', window.LICENSE_KEY);
+            });
+            window.RegulaDocumentSDK.initialize({ license: window.LICENSE_KEY });
+        });
+    </script>
+
+    <!-- QR Code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <div class="jumbotron text-center mb-4">
+        <h1>Regula Document Analyser</h1>
+        <p class="mb-3">Upload your identity document for instant verification</p>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#documentModal">
+            &#128196; Analyse Document
+        </button>
+    </div>
+
+    <div class="container">
+
+        <!-- Document Analyse Modal -->
+        <div class="modal fade" id="documentModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header border-0">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1b191e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="15" y1="9" x2="9" y2="15"/>
+                                <line x1="9" y1="9" x2="15" y2="15"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="modal-body pt-0">
+                        <h5 class="text-left mb-1 px-2">Verify your identity</h5>
+                        <p class="text-muted mb-3 px-2" style="font-size:13px;">To transfer your Avios securely, capture or upload a clear photo of your passport, national ID card, or driver's license. If your document has a front and back, make sure to include both sides.</p>
+
+                        <div class="d-flex upload-panel mx-0">
+
+                            <!-- Col 1: Upload -->
+                            <div class="upload-col d-flex flex-column align-items-center justify-content-center">
+                                <div class="upload-label">Upload a photo</div>
+                                <div class="drag-drop-zone mb-2" id="dragDropZone">
+                                    <div class="drag-drop-sub d-flex flex-column align-items-center justify-content-center" id="dragDropDefault">
+                                        <div class="d-flex align-items-center" style="gap:4px;">
+                                            <span style="font-size:13px;color:#595959;">Drag &amp; drop your photo here</span>
+                                            <span class="dd-info" data-toggle="tooltip" title="Max 5MB. Formats: PNG, JPG, BMP, TIFF, WEBP">
+                                                <svg fill="#8C8C8C" width="14" height="14" viewBox="0 0 16 16"><path d="M8 1C4.13438 1 1 4.13438 1 8C1 11.8656 4.13438 15 8 15C11.8656 15 15 11.8656 15 8C15 4.13438 11.8656 1 8 1ZM8 13.8125C4.79063 13.8125 2.1875 11.2094 2.1875 8C2.1875 4.79063 4.79063 2.1875 8 2.1875C11.2094 2.1875 13.8125 4.79063 13.8125 8C13.8125 11.2094 11.2094 13.8125 8 13.8125Z" /><path d="M7.5 7.5H8.5V11H7.5V7.5ZM7.5 5H8.5V6.5H7.5V5Z"/></svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a id="uploadFileLink" href="#" style="font-size:13px;font-weight:600;color:#1b191e;text-decoration:underline;">Upload a file</a>
+                                <div id="regula-container" style="width:100%;">
+                                    <document-reader id="documentReader"
+                                                     locale="en"
+                                                     close-button="false"
+                                                     start-screen="true"
+                                                     style="display:block;width:100%;"></document-reader>
+                                </div>
+                            </div>
+
+                            <!-- Col 2: Take a photo (QR auto-shown) -->
+                            <div class="upload-col d-flex flex-column align-items-center justify-content-center">
+                                <div class="upload-label">Take a photo</div>
+                                <div id="mobile-container" style="width:100%;">
+                                    <document-reader id="mobileReader"
+                                                     locale="en"
+                                                     close-button="false"
+                                                     start-screen="true"
+                                                     mobile-delegate="true"
+                                                     switch-to-mobile="true"
+                                                     show-mobile-button="true"
+                                                     style="display:block;width:100%;"></document-reader>
+                                </div>
+                            </div>
+
+                            <!-- Col 3: Hidden -->
+                            <div class="upload-col d-flex flex-column align-items-center justify-content-center" style="display:none !important;">
+                                <div id="qr-container" style="width:100%;">
+                                    <document-reader id="qrReader"
+                                                     locale="en"
+                                                     close-button="false"
+                                                     start-screen="true"
+                                                     mobile-delegate="true"
+                                                     switch-to-mobile="true"
+                                                     show-mobile-button="true"
+                                                     style="display:block;width:100%;"></document-reader>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div id="filePreviewFooter" style="display:none;" class="file-preview-footer">
+                            <img id="footerPreviewImg" src="" alt="preview">
+                            <span id="footerPreviewName" class="footer-preview-name"></span>
+                        </div>
+
+                        <div class="text-center py-2">
+                            <p class="text-muted mb-0" style="font-size:11px;">Powered by <strong style="color:#6f42c1;">Regula</strong></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

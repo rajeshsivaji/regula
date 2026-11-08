@@ -1,0 +1,5 @@
+service:
+  sessionApi:
+    enabled: true
+  database:
+    connectionString: "sqlite:////tmp/regula_docreader.db"

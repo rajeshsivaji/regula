@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Regula Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@regulaforensics/vp-frontend-document-components/dist/main.iife.js"></script>
+</head>
+<body>
+    <document-reader
+        id="documentReader"
+        locale="en"
+        license="OL115263"
+        service-url="https://demo.regulaforensics.com"
+        style="display: block; width: 100%; min-height: 400px;"
+    ></document-reader>
+
+    <script>
+        customElements.whenDefined('document-reader').then(() => {
+            console.log('document-reader defined!');
+        });
+
+        window.onerror = (msg, src, line, col, err) => {
+            console.error('Error:', msg, 'at', src, line);
+        };
+    </script>
+</body>
+</html>

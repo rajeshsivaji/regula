@@ -1,0 +1,7 @@
+# Executables
+ngrok.exe
+ngrok.zip
+
+# OS files
+.DS_Store
+Thumbs.db
